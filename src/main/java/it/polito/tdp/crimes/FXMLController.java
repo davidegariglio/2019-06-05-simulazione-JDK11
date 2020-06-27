@@ -5,9 +5,12 @@
 package it.polito.tdp.crimes;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.crimes.model.Model;
+import it.polito.tdp.crimes.model.Vicino;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -52,13 +55,49 @@ public class FXMLController {
     		return;
     	}
     	this.model.creaGrafo(this.boxAnno.getValue());
-    	this.txtResult.appendText(String.format("GRAFO CREATO CON %d VERTICI E %d ARCHI", this.model.getVertici(), this.model.getArchi()));
+    	this.txtResult.appendText(String.format("GRAFO CREATO CON %d VERTICI E %d ARCHI", this.model.getVertici().size(), this.model.getArchi()));
     	this.txtResult.appendText("DISTANZE TRA I VARI DISTRETTI: \n\n");
+    	for(Integer d : this.model.getVertici()) {
+    		txtResult.appendText(d+":\n");
+    		for(Vicino v : this.model.getVicini(d)) {
+    			txtResult.appendText(v.toString()+"\n");
+    		}
+    	}
+    	this.boxMese.getItems().addAll(this.model.getMesi(this.boxAnno.getValue()));
+    	this.boxGiorno.getItems().addAll(this.model.getGiorni(this.boxAnno.getValue()));
+
     }
 
     @FXML
     void doSimula(ActionEvent event) {
-
+    	txtResult.clear();
+    	Integer m;
+    	Integer g;
+    	Integer n;
+    	
+    	if(this.boxMese.getValue() == null) {
+    		this.txtResult.appendText("OCCORRE SELZIONARE UN MESE");
+    		return;
+    	}
+    	if(this.boxGiorno.getValue() == null) {
+    		this.txtResult.appendText("OCCORRE SELZIONARE UN MESE");
+    		return;
+    	}
+    	m = this.boxMese.getValue();
+    	g = this.boxMese.getValue();
+    	
+    	try {
+    		n = Integer.parseInt(this.txtN.getText());
+    	}catch(NumberFormatException e) {
+    		txtResult.appendText("INSERIRE UN NUMERO INTERO VALIDO NEL CAMPO N");
+    		return;
+    	}
+    	if(n <1 || n > 10) {
+    		txtResult.appendText("INSERIRE UN NUMERO COMPRESO TRA 1 E 10 (estremi inclusi)");
+    		return;
+    	}
+    	LocalDate data = LocalDate.of(this.boxAnno.getValue(), m, g);
+    	this.model.simula(data, n);
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete

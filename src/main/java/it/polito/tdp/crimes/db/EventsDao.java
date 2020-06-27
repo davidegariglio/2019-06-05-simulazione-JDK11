@@ -171,4 +171,88 @@ public class EventsDao {
 		}
 	}
 
+	public List<Integer> getMesi(Integer anno) {
+		String sql = "SELECT DISTINCT MONTH(e.reported_date) AS mese " + 
+				"FROM `events` e " + 
+				"WHERE Year(e.reported_date) = ? " + 
+				"ORDER BY mese ASC " ;
+		
+		List<Integer> result = new ArrayList<>();		
+		try {
+			Connection conn = DBConnect.getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			st.setInt(1, anno);			
+			ResultSet res = st.executeQuery() ;
+			
+			while(res.next()) {
+				result.add(res.getInt("mese"));
+			}
+			
+			conn.close();
+			return result ;
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null ;
+		}
+	}
+
+	public List<Integer> getGiorni(Integer anno) {
+		String sql = "SELECT DISTINCT DAY(e.reported_date) AS giorno " + 
+				"FROM `events` e " + 
+				"WHERE Year(e.reported_date) = ? " + 
+				"ORDER BY giorno ASC " ;
+		
+		List<Integer> result = new ArrayList<>();		
+		try {
+			Connection conn = DBConnect.getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			st.setInt(1, anno);			
+			ResultSet res = st.executeQuery() ;
+			
+			while(res.next()) {
+				result.add(res.getInt("giorno"));
+			}
+			
+			conn.close();
+			return result ;
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null ;
+		}
+	}
+	public Integer getDistrettoSimulazione(Integer anno) {
+		String sql = "SELECT e.district_id AS distretto, COUNT(e.incident_id) AS n " + 
+				"FROM `events` e " + 
+				"WHERE Year(e.reported_date) = ? " + 
+				"GROUP BY distretto " + 
+				"ORDER BY n ASC " ;
+		
+		Integer result = 0;		
+		
+		try {
+			Connection conn = DBConnect.getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			st.setInt(1, anno);			
+			ResultSet res = st.executeQuery() ;
+			
+			if(res.next()) {
+				result = res.getInt("distretto");
+			}
+			conn.close();
+			return result ;
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null ;
+		}
+	}
+
 }

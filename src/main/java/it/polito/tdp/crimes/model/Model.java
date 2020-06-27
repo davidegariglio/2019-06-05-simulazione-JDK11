@@ -1,6 +1,10 @@
 package it.polito.tdp.crimes.model;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
@@ -18,6 +22,7 @@ public class Model {
 	private EventsDao dao;
 	private List<Integer> vertici;
 	private Graph<Integer, DefaultWeightedEdge> grafo;
+	private Simulator s;
 	
 	public Model() {
 		this.dao = new EventsDao();
@@ -58,12 +63,39 @@ public class Model {
 
 	}
 	
-	public Integer getVertici() {
-		return this.grafo.vertexSet().size();
+	public Set<Integer> getVertici() {
+		return this.grafo.vertexSet();
 	}
 	
 	public Integer getArchi() {
 		return this.grafo.edgeSet().size();
+	}
+
+	public List<Vicino> getVicini(Integer d) {
+		List<Vicino> result = new ArrayList<>();
+	
+		for(Integer vicino : Graphs.neighborListOf(this.grafo, d))
+			result.add(new Vicino(vicino, this.grafo.getEdgeWeight(this.grafo.getEdge(d, vicino))));
+		
+		Collections.sort(result);
+		return result;
+	}
+
+	public List<Integer> getMesi(Integer anno) {
+		return this.dao.getMesi(anno);
+	}
+
+	public List<Integer> getGiorni(Integer anno) {
+		return this.dao.getGiorni(anno);
+
+	}
+	
+	public Integer getDistrettoSimulazione(Integer anno) {
+		return this.dao.getDistrettoSimulazione(anno);
+	}
+
+	public void simula(LocalDate data, Integer n) {
+		this.s = new Simulator(data, n);
 	}
 	
 }
