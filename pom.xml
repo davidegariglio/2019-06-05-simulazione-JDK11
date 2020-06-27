@@ -19,6 +19,11 @@
         <name>Your Organisation</name>
     </organization>
 	<dependencies>
+		<dependency>
+		  <groupId>com.javadocmd</groupId>
+		  <artifactId>simplelatlng</artifactId>
+		  <version>1.3.1</version>
+		</dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
