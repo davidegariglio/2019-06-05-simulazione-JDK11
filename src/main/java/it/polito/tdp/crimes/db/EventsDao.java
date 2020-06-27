@@ -88,8 +88,8 @@ public class EventsDao {
 		}
 	}
 
-	public List<Distretto> getVertici() {
-		String sql = "SELECT e.district_id AS distretto, e.geo_lat AS lat, e.geo_lon AS lon " + 
+	public List<Integer> getVertici() {
+		String sql = "SELECT e.district_id AS distretto " + 
 				"FROM `events` e " + 
 				"GROUP BY e.district_id" ;
 		try {
@@ -97,16 +97,72 @@ public class EventsDao {
 
 			PreparedStatement st = conn.prepareStatement(sql) ;
 			
-			List<Distretto> result = new ArrayList<>() ;
+			List<Integer> result = new ArrayList<>() ;
 			
 			ResultSet res = st.executeQuery() ;
 			
 			while(res.next()) {
-				result.add(new Distretto((res.getInt("distretto")), new LatLng(res.getDouble("lat"), res.getDouble("lon"))));
+				result.add(res.getInt("distretto"));
 			}
 			
 			conn.close();
 			return result ;
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null ;
+		}
+	}
+
+	public Double getLatMedia(Integer anno, Integer v1) {
+		String sql = "SELECT AVG(e.geo_lat) AS latMedia " + 
+				"FROM `events` e " + 
+				"WHERE e.district_id = ? AND Year(e.reported_date) = ? " ;
+		
+		double latMedia = 0.0;
+		try {
+			Connection conn = DBConnect.getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			st.setInt(1, v1);
+			st.setInt(2, anno);			
+			ResultSet res = st.executeQuery() ;
+			
+			while(res.next()) {
+				latMedia = res.getDouble("latMedia");
+			}
+			
+			conn.close();
+			return latMedia ;
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null ;
+		}
+	}
+
+	public Double getLonMedia(Integer anno, Integer v1) {
+		String sql = "SELECT AVG(e.geo_lon) AS lonMedia " + 
+				"FROM `events` e " + 
+				"WHERE e.district_id = ? AND Year(e.reported_date) = ? " ;
+		
+		double lonMedia = 0.0;
+		try {
+			Connection conn = DBConnect.getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			st.setInt(1, v1);
+			st.setInt(2, anno);			
+			ResultSet res = st.executeQuery() ;
+			
+			while(res.next()) {
+				lonMedia = res.getDouble("lonMedia");
+			}
+			
+			conn.close();
+			return lonMedia ;
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

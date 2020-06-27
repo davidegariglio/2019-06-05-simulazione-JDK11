@@ -47,6 +47,10 @@ public class FXMLController {
 
     @FXML
     void doCreaReteCittadina(ActionEvent event) {
+    	if(this.boxAnno.getValue() == null) {
+    		txtResult.appendText("SELEZIONARE UN ANNO PRIMA DI CREARE LA RETE CITTADINA");
+    		return;
+    	}
     	this.model.creaGrafo(this.boxAnno.getValue());
     	this.txtResult.appendText(String.format("GRAFO CREATO CON %d VERTICI E %d ARCHI", this.model.getVertici(), this.model.getArchi()));
     	this.txtResult.appendText("DISTANZE TRA I VARI DISTRETTI: \n\n");
